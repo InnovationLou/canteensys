@@ -4,6 +4,7 @@ import com.lckgroup.canteensys.entity.Customer;
 import com.lckgroup.canteensys.entity.Dish;
 import com.lckgroup.canteensys.entity.Orders;
 import com.lckgroup.canteensys.service.CustomerService;
+import com.lckgroup.canteensys.service.DishService;
 import com.lckgroup.canteensys.service.OrdersService;
 import com.lckgroup.canteensys.util.ControllerUtil;
 import com.lckgroup.canteensys.util.constant.RespCode;
@@ -33,6 +34,9 @@ public class CustomerController {
 
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private DishService dishService;
 
     @ApiOperation(value = "通过卡号获得顾客", httpMethod = "GET")
     @ApiImplicitParams({
@@ -67,10 +71,10 @@ public class CustomerController {
         return ControllerUtil.getDataResult(cusList);
     }
 
-    @ApiOperation(value = "顾客查看当日出售所有菜品",httpMethod = "GET")
+    @ApiOperation(value = "顾客查看当日所有在售菜品",httpMethod = "GET")
     @GetMapping("/allDish")
     public ResponseVO findAllDish(){
-        List<Dish> dishList = customerService.findAllDish();
+        List<Dish> dishList = dishService.findAllDish();
         if(dishList.isEmpty()){
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
         }
