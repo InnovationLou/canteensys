@@ -10,4 +10,5 @@ import java.util.List;
 public interface OrdersRep extends JpaRepository<Orders,Integer> {
     List<Orders> findByCusId(String cusId);
     Orders findByOrderId(Long orderId);
+    int deleteByOrderId(Long orderId);
 }
