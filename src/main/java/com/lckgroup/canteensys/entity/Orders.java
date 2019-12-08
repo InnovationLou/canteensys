@@ -1,5 +1,7 @@
 package com.lckgroup.canteensys.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -21,6 +23,11 @@ public class Orders {
      */
     @Column
     private String cusId;
+    /**
+     * 订单总价
+     */
+    @Column
+    private Float sumPrice;
     /**
      * 生成时间
      */
@@ -52,14 +59,16 @@ public class Orders {
      * 用餐时间
      */
     @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date mealTime;
 
     public Orders() {
     }
 
-    public Orders(Long orderId, String cusId, Date generTime, Boolean isPaid, Boolean isDone, Boolean isReported, Boolean isReady, Date mealTime) {
+    public Orders(Long orderId, String cusId, Float sumPrice, Date generTime, Boolean isPaid, Boolean isDone, Boolean isReported, Boolean isReady, Date mealTime) {
         this.orderId = orderId;
         this.cusId = cusId;
+        this.sumPrice = sumPrice;
         this.generTime = generTime;
         this.isPaid = isPaid;
         this.isDone = isDone;
@@ -76,22 +85,6 @@ public class Orders {
         this.id = id;
     }
 
-    public Boolean getReady() {
-        return isReady;
-    }
-
-    public void setReady(Boolean ready) {
-        isReady = ready;
-    }
-
-    public Date getMealTime() {
-        return mealTime;
-    }
-
-    public void setMealTime(Date mealTime) {
-        this.mealTime = mealTime;
-    }
-
     public Long getOrderId() {
         return orderId;
     }
@@ -106,6 +99,14 @@ public class Orders {
 
     public void setCusId(String cusId) {
         this.cusId = cusId;
+    }
+
+    public Float getSumPrice() {
+        return sumPrice;
+    }
+
+    public void setSumPrice(Float sumPrice) {
+        this.sumPrice = sumPrice;
     }
 
     public Date getGenerTime() {
@@ -140,12 +141,29 @@ public class Orders {
         isReported = reported;
     }
 
+    public Boolean getReady() {
+        return isReady;
+    }
+
+    public void setReady(Boolean ready) {
+        isReady = ready;
+    }
+
+    public Date getMealTime() {
+        return mealTime;
+    }
+
+    public void setMealTime(Date mealTime) {
+        this.mealTime = mealTime;
+    }
+
     @Override
     public String toString() {
         return "Orders{" +
                 "id=" + id +
                 ", orderId=" + orderId +
                 ", cusId='" + cusId + '\'' +
+                ", sumPrice=" + sumPrice +
                 ", generTime=" + generTime +
                 ", isPaid=" + isPaid +
                 ", isDone=" + isDone +
