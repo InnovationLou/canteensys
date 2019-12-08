@@ -16,10 +16,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRep customerRep;
 
-    @Autowired
-    private DishRep dishRep;
-
-
     @Override
     public Customer findByCusId(String cusId) {
         return customerRep.findByCusId(cusId);
@@ -35,10 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRep.findAll();
     }
 
-    @Override
-    public List<Dish> findAllDish() {
-        return dishRep.findAllByIsSellingTrue();
-    }
+
 
 
 }
