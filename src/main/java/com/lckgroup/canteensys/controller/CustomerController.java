@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
@@ -60,11 +61,13 @@ public class CustomerController {
         return ControllerUtil.getDataResult(customer);
     }
 
+
     @ApiOperation(value = "创建新顾客",httpMethod = "POST" )
     @PostMapping("/create")
     public ResponseVO createCustomer(Customer customer){
         return ControllerUtil.getSuccessResultBySelf(customerService.createCustomer(customer));
     }
+
 
     @ApiOperation(value = "查看所有顾客信息",httpMethod = "GET")
     @GetMapping("/allCustomer")
@@ -79,6 +82,7 @@ public class CustomerController {
         return ControllerUtil.getDataResult(cusList);
     }
 
+
     @ApiOperation(value = "顾客查看当日所有在售菜品",httpMethod = "GET")
     @GetMapping("/allDish")
     public ResponseVO findAllDish(){
@@ -89,11 +93,12 @@ public class CustomerController {
         return ControllerUtil.getDataResult(dishList);
     }
 
+
     @ApiOperation(value = "通过卡号查看订单",httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cusId", value = "卡号", required = true)
     })
-    @GetMapping("/customerOrder/{cusId}")
+    @GetMapping("/customerOrder/findAll/{cusId}")
     public ResponseVO findAll(@PathVariable String cusId){
         List<Orders> ordersList = ordersService.findOrdersByCusId(cusId);
         if(ordersList.isEmpty()){
@@ -101,6 +106,7 @@ public class CustomerController {
         }
         return ControllerUtil.getDataResult(ordersList);
     }
+
 
     @ApiOperation(value = "顾客点餐提交订单",httpMethod = "POST" )
     @PostMapping("/customerOrder/creatOrder")
@@ -130,6 +136,7 @@ public class CustomerController {
         return ControllerUtil.getDataResult(orders);
     }
 
+
     @ApiOperation(value = "提交订单后设置预计取餐时间",httpMethod = "POST" )
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderId", value = "订单号", required = true),
@@ -141,5 +148,27 @@ public class CustomerController {
             return ControllerUtil.getSuccessResultBySelf("");
         }
         return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+    }
+
+
+    @ApiOperation(value = "通过订单号删除未完成订单",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderId", value = "订单号", required = true)
+    })
+    @PostMapping("/customerOrder/deleteOrders")
+    @Transactional
+    public ResponseVO deleteOrders(String orderId){
+        Orders orders = ordersService.findOrdersByOrderId(Long.parseLong(orderId));
+        if (orders==null||"".equals(orders)){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
+        if(orders.getDone()==true||orders.getPaid()==true){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_INVALID_OPERATION);
+        }
+        if(ordersService.deleteByOrderId(Long.parseLong(orderId))){
+            return ControllerUtil.getSuccessResultBySelf("");
+        }else {
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
     }
 }

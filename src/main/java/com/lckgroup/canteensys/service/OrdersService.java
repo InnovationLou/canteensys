@@ -12,4 +12,8 @@ public interface OrdersService {
     Orders creatOrders(Orders orders);
     //通过orderId设置预计取餐时间
     boolean setMealTime(String orderId, String mealTime);
+    //通过orderId查找Orders对象
+    Orders findOrdersByOrderId(Long orderId);
+    //通过orderId删除未完成订单
+    boolean deleteByOrderId(Long orderId);
 }
