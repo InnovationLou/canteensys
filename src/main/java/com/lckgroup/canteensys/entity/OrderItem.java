@@ -11,10 +11,10 @@ public class OrderItem {
     @Column
     private Long id;
     /**
-     * 条目id
+     * 菜id
      */
     @Column
-    private Long itemId;
+    private Long dishId;
     /**
      * 订单id
      */
@@ -39,26 +39,13 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Long itemId, Long orderId, Integer dishNum, Float dishPrice, Float dishStar) {
-        this.itemId = itemId;
-        this.orderId = orderId;
-        this.dishNum = dishNum;
-        this.dishPrice = dishPrice;
-        this.dishStar = dishStar;
+    public OrderItem(Long dishId,Long orderId,Integer dishNum,Float dishPrice,Float dishStar){
+        this.dishId=dishId;
+        this.orderId=orderId;
+        this.dishNum=dishNum;
+        this.dishPrice=dishPrice;
+        this.dishStar=dishStar;
     }
-
-    @Override
-    public String toString() {
-        return "DishItem{" +
-                "id=" + id +
-                ", itemId=" + itemId +
-                ", orderId=" + orderId +
-                ", dishNum=" + dishNum +
-                ", dishPrice=" + dishPrice +
-                ", dishStar=" + dishStar +
-                '}';
-    }
-
     public Long getId() {
         return id;
     }
@@ -67,12 +54,12 @@ public class OrderItem {
         this.id = id;
     }
 
-    public Long getItemId() {
-        return itemId;
+    public Long getDishId() {
+        return dishId;
     }
 
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
+    public void setDishId(Long dishId) {
+        this.dishId = dishId;
     }
 
     public Long getOrderId() {
@@ -105,5 +92,17 @@ public class OrderItem {
 
     public void setDishStar(Float dishStar) {
         this.dishStar = dishStar;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", dishId=" + dishId +
+                ", orderId=" + orderId +
+                ", dishNum=" + dishNum +
+                ", dishPrice=" + dishPrice +
+                ", dishStar=" + dishStar +
+                '}';
     }
 }
