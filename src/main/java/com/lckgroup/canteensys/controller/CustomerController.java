@@ -41,8 +41,10 @@ public class CustomerController {
     @Autowired
     private DishService dishService;
 
+
     @Autowired
     private OrderItemService orderItemService;
+
 
     @ApiOperation(value = "通过卡号获得顾客", httpMethod = "GET")
     @ApiImplicitParams({
