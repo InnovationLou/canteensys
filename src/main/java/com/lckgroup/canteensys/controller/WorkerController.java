@@ -46,7 +46,7 @@ public class WorkerController {
     })
     @GetMapping(path = "/downByDishId")
     public @ResponseBody
-    ResponseVO<Object> downDish(@RequestParam("Dishid") Integer Dishid) {
+    ResponseVO<Object> downDish(@RequestParam("Dishid") Long Dishid) {
         Dish dish = workerService.findByDishId(Dishid);
         if (dish == null) {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
@@ -60,9 +60,9 @@ public class WorkerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "dishId", value = "菜的id", required = true)
     })
-    @GetMapping(path = "/{dishId}")
+    @GetMapping(path = "/upDish")
     public @ResponseBody
-    ResponseVO<Object> upDish(@PathVariable Integer dishId) {
+    ResponseVO<Object> upDish(@PathVariable Long dishId) {
         Dish dish = workerService.findByDishId(dishId);
         if (dish == null) {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
@@ -79,7 +79,7 @@ public class WorkerController {
     })
     @GetMapping(path = "/reviseDishNum")
     public @ResponseBody
-    ResponseVO<Object> reviseDishNum(@PathVariable Integer dishId,@PathVariable Integer remainNum) {
+    ResponseVO<Object> reviseDishNum(@PathVariable Long dishId,@PathVariable Integer remainNum) {
         Dish dish = workerService.findByDishId(dishId);
         if (dish == null) {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
