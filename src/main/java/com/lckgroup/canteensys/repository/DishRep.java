@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface DishRep extends JpaRepository<Dish,Integer> {
     List<Dish> findAllByIsSellingTrue();
+
     Dish findByDishId(Long dishId);
 }

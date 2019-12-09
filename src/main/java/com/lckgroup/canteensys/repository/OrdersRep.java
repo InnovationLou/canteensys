@@ -9,6 +9,10 @@ import java.util.List;
 @Repository
 public interface OrdersRep extends JpaRepository<Orders,Integer> {
     List<Orders> findByCusId(String cusId);
-    Orders findByOrderId(Long orderId);
+
+    List<Orders> findByIsDoneTrue();
+
+    Orders findByOrderId(Long aLong);
+
     int deleteByOrderId(Long orderId);
 }
