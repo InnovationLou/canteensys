@@ -1,58 +1,35 @@
-package com.lckgroup.canteensys.entity;
+package com.lckgroup.canteensys.util;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-@Entity
-@Table(name = "orderitem")
-public class OrderItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
-    private Long id;
+public class itemInfo {
     /**
      * 菜id
      */
-    @Column
     private Long dishId;
     /**
      * 订单id
      */
-    @Column
     private Long orderId;
+    /**
+     * 菜名称
+     */
+    private  String dishName;
     /**
      * 菜数量
      */
-    @Column
     private Integer dishNum;
     /**
      * 条目总价
      */
-    @Column
     private Float dishPrice;
     /**
      * 菜评分
      */
-    @Column
     private Float dishStar;
-
-    public OrderItem() {
-    }
-
-    public OrderItem(Long dishId,Long orderId,Integer dishNum,Float dishPrice,Float dishStar){
-        this.dishId=dishId;
-        this.orderId=orderId;
-        this.dishNum=dishNum;
-        this.dishPrice=dishPrice;
-        this.dishStar=dishStar;
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getDishId() {
         return dishId;
@@ -68,6 +45,14 @@ public class OrderItem {
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
+    }
+
+    public String getDishName() {
+        return dishName;
+    }
+
+    public void setDishName(String dishName) {
+        this.dishName = dishName;
     }
 
     public Integer getDishNum() {
@@ -94,12 +79,24 @@ public class OrderItem {
         this.dishStar = dishStar;
     }
 
+    public itemInfo(Long dishId, Long orderId, String dishName, Integer dishNum, Float dishPrice, Float dishStar) {
+        this.dishId = dishId;
+        this.orderId = orderId;
+        this.dishName = dishName;
+        this.dishNum = dishNum;
+        this.dishPrice = dishPrice;
+        this.dishStar = dishStar;
+    }
+
+    public itemInfo() {
+    }
+
     @Override
     public String toString() {
-        return "OrderItem{" +
-                "id=" + id +
-                ", dishId=" + dishId +
+        return "itemInfo{" +
+                "dishId=" + dishId +
                 ", orderId=" + orderId +
+                ", dishName='" + dishName + '\'' +
                 ", dishNum=" + dishNum +
                 ", dishPrice=" + dishPrice +
                 ", dishStar=" + dishStar +

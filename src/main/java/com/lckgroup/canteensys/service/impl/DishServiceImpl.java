@@ -18,4 +18,14 @@ public class DishServiceImpl implements DishService {
     public List<Dish> findAllDish() {
         return dishRep.findAllByIsSellingTrue();
     }
+
+    @Override
+    public Dish findByDishId(Long dishId) {
+        return dishRep.findByDishId(dishId);
+    }
+
+    @Override
+    public void creatDish(Dish dish) {
+        dishRep.save(dish);
+    }
 }

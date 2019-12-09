@@ -10,6 +10,7 @@ import com.lckgroup.canteensys.service.OrdersService;
 import com.lckgroup.canteensys.service.OrderItemService;
 import com.lckgroup.canteensys.util.ControllerUtil;
 import com.lckgroup.canteensys.util.constant.RespCode;
+import com.lckgroup.canteensys.util.itemInfo;
 import com.lckgroup.canteensys.vo.ResponseVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -170,5 +171,116 @@ public class CustomerController {
         }else {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
         }
+    }
+
+
+    @ApiOperation(value = "通过订单号查看订单详情",httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderId", value = "订单号", required = true)
+    })
+    @GetMapping("/customerOrder/aboutOrders/{orderId}")
+    public ResponseVO aboutOrders(@PathVariable String orderId){
+        List<itemInfo> itemInfos = orderItemService.findByOrderId(orderId);
+        if(itemInfos==null||itemInfos.isEmpty()){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
+        return ControllerUtil.getDataResult(itemInfos);
+    }
+
+
+    @ApiOperation(value = "通过订单号投诉",httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderId", value = "订单号", required = true)
+    })
+    @GetMapping("/customerOrder/complainOrders/{orderId}")
+    public ResponseVO complainOrders(@PathVariable String orderId){
+        Orders orders = ordersService.findOrdersByOrderId(new Long(orderId));
+        if("".equals(orders)||orders==null){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
+        orders.setReported(true);
+        ordersService.creatOrders(orders);
+        return ControllerUtil.getSuccessResultBySelf("");
+    }
+
+
+    @ApiOperation(value = "通过订单号支付订单费用",httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderId", value = "订单号", required = true)
+    })
+    @GetMapping("/customerOrder/payOrders/{orderId}")
+    public ResponseVO payOrders(@PathVariable String orderId){
+        Orders orders = ordersService.findOrdersByOrderId(new Long(orderId));
+        if("".equals(orders)||orders==null){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
+        orders.setPaid(true);
+        ordersService.creatOrders(orders);
+        return ControllerUtil.getSuccessResultBySelf("");
+    }
+
+
+    @ApiOperation(value = "评价菜品星级",httpMethod = "POST" )
+    @PostMapping("/customerOrder/evaluateDish")
+    public ResponseVO evaluateDish(@RequestBody List<OrderItem> orderItems){
+       if(orderItems.isEmpty()||orderItems==null){
+           return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+       }
+       Dish dish = null;
+       List<OrderItem> orderItemsByDishId = null;//有相同dishId的orderItem容器
+       int cnt = 0;//有相同dishId的orderItem计数器
+        float sumStar = 0;//星级累加器
+       //遍历orderItem
+       for(OrderItem orderItem:orderItems){
+           //将每个评分后的orderItem更新
+           orderItemService.updateOrderItem(orderItem);
+           //计算加上此次评分后此orderItem涉及到的orders的平均星级并更新orders
+           dish = dishService.findByDishId(orderItem.getDishId());
+           orderItemsByDishId = orderItemService.findByDishId(orderItem.getDishId());
+           if(orderItemsByDishId==null||orderItemsByDishId.isEmpty()){
+               return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_SERVER_ERROR);
+           }
+           for (OrderItem orderItemByDishId:orderItemsByDishId){
+                sumStar += orderItemByDishId.getDishStar();
+                cnt++;
+           }
+           dish.setStarRate(sumStar/cnt);
+           dishService.creatDish(dish);
+           sumStar=0;
+           cnt=0;
+       }
+        return ControllerUtil.getSuccessResultBySelf("");
+    }
+
+
+    @ApiOperation(value = "通过订单号完成订单交易",httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderId", value = "订单号", required = true)
+    })
+    @GetMapping("/customerOrder/finishOrders/{orderId}")
+    public ResponseVO finishOrders(@PathVariable String orderId){
+        Orders orders = ordersService.findOrdersByOrderId(new Long(orderId));
+        if("".equals(orders)||orders==null){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
+        orders.setDone(true);
+        ordersService.updateOrders(orders);
+        return ControllerUtil.getSuccessResultBySelf("");
+    }
+
+
+    @ApiOperation(value = "通过订单号通知食堂准备菜品(Ready)",httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderId", value = "订单号", required = true)
+    })
+    @GetMapping("/customerOrder/readyOrders/{orderId}")
+    public ResponseVO readyOrders(@PathVariable String orderId){
+        Orders orders = ordersService.findOrdersByOrderId(new Long(orderId));
+        if("".equals(orders)||orders==null){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
+        orders.setReady(true);
+        ordersService.creatOrders(orders);
+        return ControllerUtil.getSuccessResultBySelf("");
     }
 }
