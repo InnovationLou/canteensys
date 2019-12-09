@@ -75,4 +75,9 @@ public class OrdersServiceImpl implements OrdersService {
         };
         return false;
     }
+
+    @Override
+    public void updateOrders(Orders orders) {
+        ordersRep.save(orders);
+    }
 }

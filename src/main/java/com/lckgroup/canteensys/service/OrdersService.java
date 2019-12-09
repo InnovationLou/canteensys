@@ -16,4 +16,6 @@ public interface OrdersService {
     Orders findOrdersByOrderId(Long orderId);
     //通过orderId删除未完成订单
     boolean deleteByOrderId(Long orderId);
+    //更新orders
+    void updateOrders(Orders orders);
 }
