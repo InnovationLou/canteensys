@@ -40,14 +40,14 @@ public class WorkerController {
     @Autowired
     private  WorkerService workerService;
 
-    @ApiOperation(value = "通过DishId下架菜",httpMethod = "POST")
+    @ApiOperation(value = "通过dishId下架菜",httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "dishId", value = "菜的id", required = true)
+            @ApiImplicitParam(name = "dishId", value = "dishId", required = true)
     })
     @GetMapping(path = "/downByDishId")
     public @ResponseBody
-    ResponseVO<Object> downDish(@RequestParam("Dishid") Long Dishid) {
-        Dish dish = workerService.findByDishId(Dishid);
+    ResponseVO<Object> downDish(Long dishId) {
+        Dish dish = workerService.findByDishId(dishId);
         if (dish == null) {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
         } else {
@@ -56,13 +56,13 @@ public class WorkerController {
         }
     }
 
-    @ApiOperation(value = "通过DishId上架菜",httpMethod = "POST")
+    @ApiOperation(value = "通过dishId上架菜",httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "dishId", value = "菜的id", required = true)
+            @ApiImplicitParam(name = "dishId", value = "dishId", required = true),
     })
     @GetMapping(path = "/upDish")
     public @ResponseBody
-    ResponseVO<Object> upDish(@PathVariable Long dishId) {
+    ResponseVO<Object> upDish(Long dishId) {
         Dish dish = workerService.findByDishId(dishId);
         if (dish == null) {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
@@ -92,7 +92,7 @@ public class WorkerController {
 
 
 
-    @ApiOperation(value = "通过顾客id查询订单",httpMethod = "GET")
+    @ApiOperation(value = "通过顾客id查询订单",httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cusId", value = "顾客id", required = true)
     })
@@ -103,7 +103,7 @@ public class WorkerController {
 
 
     @ApiOperation(value = "查找被投诉的订单", httpMethod = "GET")
-    @GetMapping("/customerOrder")
+    @GetMapping("/workerOrder/customerOrder")
     public ResponseVO findByIsDone(){
         List<Orders> ordersList = workerService.findByIsDoneTrue();
         if(ordersList.isEmpty()){
@@ -118,7 +118,7 @@ public class WorkerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cusId", value = "顾客id", required = true)
     })
-    @GetMapping(path = "/reviseOrdersReady")
+    @GetMapping(path = "/workerOrder/reviseOrdersReady")
     public @ResponseBody
     ResponseVO<Object> reviseOrdersReady(@RequestParam("cusId") String cusId) {
         List<Orders> ordersList = ordersService.findOrdersByCusId(cusId);
@@ -133,14 +133,14 @@ public class WorkerController {
         return ControllerUtil.getDataResult(ordersList);
         }
 
-    @ApiOperation(value = "修改订单准备支付状态",httpMethod = "POST")
+    @ApiOperation(value = "修改订单支付状态",httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "cusId", value = "顾客id", required = true)
+            @ApiImplicitParam(name = "orderId", value = "订单id", required = true)
     })
-    @GetMapping(path = "/reviseOrdersPaid")
+    @GetMapping(path = "/workerOrder/reviseOrdersPaid")
     public @ResponseBody
-    ResponseVO<Object> reviseOrdersPaid(@RequestParam("cusId") String cusId) {
-        List<Orders> ordersList = ordersService.findOrdersByCusId(cusId);
+    ResponseVO<Object> reviseOrdersPaid(String orderId) {
+        List<Orders> ordersList = ordersService.findOrdersByCusId(orderId);
         if(ordersList.isEmpty()){
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
         }else{
