@@ -8,5 +8,16 @@ import java.util.List;
 
 @Repository
 public interface DishRep extends JpaRepository<Dish,Integer> {
+
+
+    Dish findByDishId(Integer Id);
+
     List<Dish> findAllByIsSellingTrue();
+
+    int findSoldNumByDishId(Integer dishId);
+
+    int findRemainNumByDishId(Integer dishId);
+
+
+
 }
