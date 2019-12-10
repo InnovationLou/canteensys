@@ -61,21 +61,13 @@ public class Dish {
     @Column
     private Boolean isSelling;
 
-    public Dish() {
-    }
+    /**
+     * 售卖时间:
+     * 周一~周日    int1~7
+     */
+    @Column
+    private Integer sellWeekDay;
 
-    public Dish(Long dishId, String dishName, String dishIntro, Integer dishWindow, Float dishPrice, String dishPic, Integer remainNum, Float starRate, Integer soldNum, Boolean isSelling) {
-        this.dishId = dishId;
-        this.dishName = dishName;
-        this.dishIntro = dishIntro;
-        this.dishWindow = dishWindow;
-        this.dishPrice = dishPrice;
-        this.dishPic = dishPic;
-        this.remainNum = remainNum;
-        this.starRate = starRate;
-        this.soldNum = soldNum;
-        this.isSelling = isSelling;
-    }
 
     public Integer getId() {
         return id;
@@ -165,6 +157,17 @@ public class Dish {
         isSelling = selling;
     }
 
+    public Integer getSellWeekDay() {
+        return sellWeekDay;
+    }
+
+    public void setSellWeekDay(Integer sellWeekDay) {
+        this.sellWeekDay = sellWeekDay;
+    }
+
+    public Dish() {
+    }
+
     @Override
     public String toString() {
         return "Dish{" +
@@ -179,6 +182,7 @@ public class Dish {
                 ", starRate=" + starRate +
                 ", soldNum=" + soldNum +
                 ", isSelling=" + isSelling +
+                ", sellWeekDay='" + sellWeekDay + '\'' +
                 '}';
     }
 }
