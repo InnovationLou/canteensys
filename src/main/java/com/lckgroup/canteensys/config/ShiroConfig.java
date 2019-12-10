@@ -1,6 +1,6 @@
 package com.lckgroup.canteensys.config;
 
-import com.lckgroup.canteensys.shiro.CardRealm;
+import com.lckgroup.canteensys.shiro.CustomerRealm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,15 +29,15 @@ public class ShiroConfig {
 
     //DefaultWebSecurityManager
     @Bean
-    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("cardRealm") CardRealm cardRealm){
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("customerRealm") CustomerRealm customerRealm){
         DefaultWebSecurityManager securityManager=new DefaultWebSecurityManager();
-        securityManager.setRealm(cardRealm);
+        securityManager.setRealm(customerRealm);
         return securityManager;
     }
 
     //Realm
     @Bean
-    public CardRealm cardRealm(){
-        return new CardRealm();
+    public CustomerRealm customerRealm(){
+        return new CustomerRealm();
     }
 }
