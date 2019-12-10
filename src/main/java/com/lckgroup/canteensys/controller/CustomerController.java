@@ -84,7 +84,7 @@ public class CustomerController {
     }
 
 
-    @ApiOperation(value = "顾客查看当日所有在售菜品",httpMethod = "GET")
+    @ApiOperation(value = "顾客查看所有在售菜品",httpMethod = "GET")
     @GetMapping("/allDish")
     public ResponseVO findAllDish(){
         List<Dish> dishList = dishService.findAllDish();
