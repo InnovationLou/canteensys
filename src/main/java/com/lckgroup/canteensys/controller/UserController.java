@@ -11,13 +11,11 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -44,5 +42,13 @@ public class UserController {
             logger.error(e.toString());
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_UNKNOWN_ERROR);
         }
+    }
+
+    @ApiOperation(value = "用户注销接口")
+    @GetMapping("/logout")
+    @RequiresAuthentication
+    public ResponseVO logout() {
+        SecurityUtils.getSubject().logout();
+        return ControllerUtil.getSuccessResultBySelf("注销成功");
     }
 }
