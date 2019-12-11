@@ -8,7 +8,10 @@ import java.util.List;
 
 @Repository
 public interface DishRep extends JpaRepository<Dish,Integer> {
-    List<Dish> findAllByIsSellingTrue();
+    List<Dish> findAllBySellWeekDay(Integer sellWeekDay);
 
+    List<Dish> findAllByDishIdTrue();
     Dish findByDishId(Long dishId);
+
+    List<Dish> findAllByIsSellingTrue();
 }
