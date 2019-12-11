@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,10 +85,10 @@ public class CustomerController {
     }
 
 
-    @ApiOperation(value = "顾客查看所有在售菜品",httpMethod = "GET")
+    @ApiOperation(value = "顾客查看当日在售菜品",httpMethod = "GET")
     @GetMapping("/allDish")
     public ResponseVO findAllDish(){
-        List<Dish> dishList = dishService.findAllDish();
+        List<Dish> dishList = dishService.findAllSellingDishByDate();
         if(dishList.isEmpty()){
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
         }
@@ -95,12 +96,13 @@ public class CustomerController {
     }
 
 
-    @ApiOperation(value = "通过卡号查看订单",httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "cusId", value = "卡号", required = true)
-    })
-    @GetMapping("/customerOrder/findAll/{cusId}")
-    public ResponseVO findAll(@PathVariable String cusId){
+    @ApiOperation(value = "已登录顾客查看所有订单",httpMethod = "GET")
+    @GetMapping("/customerOrder/findAll")
+    public ResponseVO findAll(){
+        //获取已登录顾客的cusId
+        Customer customer = (Customer) SecurityUtils.getSubject().getPrincipal();
+        String cusId = customer.getCusId();
+
         List<Orders> ordersList = ordersService.findOrdersByCusId(cusId);
         if(ordersList.isEmpty()){
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
@@ -109,14 +111,14 @@ public class CustomerController {
     }
 
 
-    @ApiOperation(value = "顾客点餐提交订单",httpMethod = "POST" )
+    @ApiOperation(value = "已登录顾客点餐提交订单",httpMethod = "POST" )
     @PostMapping("/customerOrder/creatOrder")
     public ResponseVO creatOrder(@RequestBody List<OrderItem> orderItems){
         if(orderItems.isEmpty()||orderItems==null){
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
         }
-        //模拟已登录顾客
-        Customer customer = new Customer();
+        //获取已登录顾客的cusId
+        Customer customer = (Customer) SecurityUtils.getSubject().getPrincipal();
         String cusId = customer.getCusId();
         //新建订单类
         Orders orders = new Orders(new Long(0),cusId, new Float(0),new Date(),false,false,false,false,null);
@@ -216,6 +218,11 @@ public class CustomerController {
         }
         orders.setPaid(true);
         ordersService.creatOrders(orders);
+        //获取已登录顾客的对象并将balance减除sumPrice
+        Customer customer = (Customer) SecurityUtils.getSubject().getPrincipal();
+        customer.setCusBalance(customer.getCusBalance()-orders.getSumPrice());
+        customerService.createCustomer(customer);
+
         return ControllerUtil.getSuccessResultBySelf("");
     }
 
