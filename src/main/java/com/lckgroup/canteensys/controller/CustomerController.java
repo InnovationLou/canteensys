@@ -84,15 +84,6 @@ public class CustomerController {
     }
 
 
-    @ApiOperation(value = "顾客查看当日所有在售菜品",httpMethod = "GET")
-    @GetMapping("/allDish")
-    public ResponseVO findAllDish(){
-        List<Dish> dishList = dishService.findAllDish();
-        if(dishList.isEmpty()){
-            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
-        }
-        return ControllerUtil.getDataResult(dishList);
-    }
 
 
     @ApiOperation(value = "通过卡号查看订单",httpMethod = "GET")
