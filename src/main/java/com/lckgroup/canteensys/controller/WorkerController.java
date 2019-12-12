@@ -29,7 +29,31 @@ public class WorkerController {
 
     @Autowired
     private OrdersService ordersService;
+    @Autowired
+    private DishService dishService;
 
+    @ApiOperation(value = "管理人员查看当日所有在售菜品",httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sellingWeekDay", value = "sellingWeekDay", required = true)
+    })
+    @GetMapping("/Dish/findTodayDish")
+    public ResponseVO findTodayDish(Integer sellingWeekDay){
+        List<Dish> dishList = dishService.findTodayDish(sellingWeekDay);
+        if(dishList.isEmpty()){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
+        return ControllerUtil.getDataResult(dishList);
+    }
+
+    @ApiOperation(value = "管理人员查看所有菜品(在售与不在售)",httpMethod = "GET")
+    @GetMapping("/Dish/findDish")
+    public ResponseVO findDish(){
+        List<Dish> dishList = dishService.findDish();
+        if(dishList.isEmpty()){
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        }
+        return ControllerUtil.getDataResult(dishList);
+    }
 
     @ApiOperation(value = "创建新菜",httpMethod = "POST" )
     @PostMapping("/createDish")
@@ -44,9 +68,9 @@ public class WorkerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "dishId", value = "dishId", required = true)
     })
-    @GetMapping(path = "/downByDishId")
+    @GetMapping("/Dish/downDish/{dishId}")
     public @ResponseBody
-    ResponseVO<Object> downDish(Long dishId) {
+    ResponseVO<Object> downDish(@PathVariable Long dishId) {
         Dish dish = workerService.findByDishId(dishId);
         if (dish == null) {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
@@ -60,9 +84,9 @@ public class WorkerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "dishId", value = "dishId", required = true),
     })
-    @GetMapping(path = "/upDish")
+    @GetMapping("/Dish/{dishId}")
     public @ResponseBody
-    ResponseVO<Object> upDish(Long dishId) {
+    ResponseVO<Object> upDish(@PathVariable Long dishId) {
         Dish dish = workerService.findByDishId(dishId);
         if (dish == null) {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
@@ -77,7 +101,7 @@ public class WorkerController {
             @ApiImplicitParam(name = "dishId", value = "菜的id", required = true),
             @ApiImplicitParam(name = "remainNum", value = "加菜数量", required = true)
     })
-    @GetMapping(path = "/reviseDishNum")
+    @PostMapping(path = "/Dish/reviseDishNum")
     public @ResponseBody
     ResponseVO<Object> reviseDishNum(@PathVariable Long dishId,@PathVariable Integer remainNum) {
         Dish dish = workerService.findByDishId(dishId);
@@ -85,6 +109,43 @@ public class WorkerController {
             return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
         } else {
             dish.setRemainNum(remainNum);
+            return ControllerUtil.getDataResult(workerService.reviseDish(dish));
+        }
+    }
+
+
+
+    @ApiOperation(value = "修改某个菜的数据",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "dishId", value = "菜的id", required = true),
+            @ApiImplicitParam(name = "disIntro", value = "介绍"),
+            @ApiImplicitParam(name = "dishName", value = "菜名"),
+            @ApiImplicitParam(name = "dishPic", value = "图片"),
+            @ApiImplicitParam(name = "dishPrice", value = "价格"),
+            @ApiImplicitParam(name = "dishType", value = "种类"),
+            @ApiImplicitParam(name = "isSelling", value = "是否在售"),
+            @ApiImplicitParam(name = "remainNum", value = "剩余量"),
+            @ApiImplicitParam(name = "soldNum", value = "销售量"),
+            @ApiImplicitParam(name = "starRate", value = "评价星级")
+    })
+    @PostMapping(path = "/reviseDish")
+    public @ResponseBody
+    ResponseVO<Object> reviseDish(Long dishId,String dishIntro,String dishName,String dishPic,Float dishPrice,Integer dishWindow,
+    Boolean isSelling,Integer remainNum,Integer sellWeekDay
+    ) {
+        Dish dish = workerService.findByDishId(dishId);
+        if (dish == null) {
+            return ControllerUtil.getFalseResultMsgBySelf(RespCode.MSG_NOT_FOUND_DATA);
+        } else {
+            dish.setRemainNum(remainNum);
+            dish.setDishIntro(dishIntro);
+            dish.setDishName(dishName);
+            dish.setDishPic(dishPic);
+            dish.setDishPrice(dishPrice);
+            dish.setDishWindow(dishWindow);
+            dish.setSelling(isSelling);
+            dish.setRemainNum(remainNum);
+            dish.setSellWeekDay(sellWeekDay);
             return ControllerUtil.getDataResult(workerService.reviseDish(dish));
         }
     }
@@ -118,7 +179,7 @@ public class WorkerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cusId", value = "顾客id", required = true)
     })
-    @GetMapping(path = "/workerOrder/reviseOrdersReady")
+    @PostMapping(path = "/workerOrder/reviseOrdersReady")
     public @ResponseBody
     ResponseVO<Object> reviseOrdersReady(@RequestParam("cusId") String cusId) {
         List<Orders> ordersList = ordersService.findOrdersByCusId(cusId);
@@ -137,7 +198,7 @@ public class WorkerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderId", value = "订单id", required = true)
     })
-    @GetMapping(path = "/workerOrder/reviseOrdersPaid")
+    @PostMapping(path = "/workerOrder/reviseOrdersPaid")
     public @ResponseBody
     ResponseVO<Object> reviseOrdersPaid(String orderId) {
         List<Orders> ordersList = ordersService.findOrdersByCusId(orderId);
@@ -151,6 +212,8 @@ public class WorkerController {
         }
         return ControllerUtil.getDataResult(ordersList);
     }
+
+
 
     }
 

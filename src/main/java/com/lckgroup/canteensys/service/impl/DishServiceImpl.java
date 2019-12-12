@@ -13,15 +13,19 @@ public class DishServiceImpl implements DishService {
     @Autowired
     private DishRep dishRep;
 
-
     @Override
-    public List<Dish> findAllDish() {
-        return dishRep.findAllByIsSellingTrue();
+    public List<Dish> findTodayDish(Integer sellingWeekDay) {
+        return dishRep.findAllBySellWeekDay(sellingWeekDay);
     }
 
     @Override
     public Dish findByDishId(Long dishId) {
         return dishRep.findByDishId(dishId);
+    }
+
+    @Override
+    public List<Dish> findDish() {
+        return dishRep.findAllByDishIdTrue();
     }
 
     @Override
