@@ -13,5 +13,7 @@ public interface DishRep extends JpaRepository<Dish,Integer> {
     List<Dish> findAllByDishIdTrue();
     Dish findByDishId(Long dishId);
 
+    List<Dish> findBySellWeekDayAndIsSelling(Integer week, boolean b);
     List<Dish> findAllByIsSellingTrue();
+
 }

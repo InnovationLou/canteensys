@@ -5,6 +5,7 @@ import com.lckgroup.canteensys.entity.Dish;
 import java.util.List;
 
 public interface DishService {
+
     //查找当天所有在售菜品
     List<Dish> findTodayDish(Integer sellingWeekDay);
 
@@ -14,4 +15,6 @@ public interface DishService {
     List<Dish> findDish();
 
     void creatDish(Dish dish);
+    //查找当日在售菜品
+    List<Dish> findAllSellingDishByDate();
 }
