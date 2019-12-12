@@ -19,16 +19,10 @@ public class WorkerServiceImpl implements WorkerService {
     private OrdersRep ordersRep;
 
 
-
-
-
     @Override
     public void deleteByDishId(Long dishid) {
 
     }
-
-
-
 
     @Override
     public List<Dish> findAllDish() {
